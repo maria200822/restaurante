@@ -136,7 +136,7 @@ const enviarMensagem = () => {
     </section>
 
     <section class="catalogo">
-      <h2>✨ Nosso Cardápio Destaque</h2>
+      <h2>  Nosso Cardápio Destaque </h2>
       <p class="subtitulo-secao">Conheça algumas de nossas especialidades mais amadas</p>
 
       <div class="categorias-grid">

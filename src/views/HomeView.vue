@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 
@@ -175,7 +174,7 @@ onMounted(() => {
     <!-- CATÁLOGO -->
     <section class="catalogo">
 
-      <h2>✨ Nosso Cardápio Destaque</h2>
+      <h2> Nosso Cardápio Destaque</h2>
 
       <p class="subtitulo-secao">
         Conheça algumas de nossas especialidades mais amadas
@@ -558,18 +557,15 @@ onMounted(() => {
 
 <style scoped>
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@400;500;600;700&display=swap');
+
 /* =========================
    ESTILO GERAL
 ========================= */
 
 * {
   box-sizing: border-box;
-  font-family:
-    'Segoe UI',
-    Tahoma,
-    Geneva,
-    Verdana,
-    sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 /* =========================
@@ -579,7 +575,7 @@ onMounted(() => {
 .hero {
   position: relative;
   text-align: center;
-  padding: 120px 20px;
+  padding: 140px 20px;
 
   background-image:
     url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1200&q=80');
@@ -595,7 +591,7 @@ onMounted(() => {
   inset: 0;
 
   background:
-    rgba(0, 0, 0, 0.6);
+    linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.75) 100%);
 
   z-index: 1;
 }
@@ -606,19 +602,30 @@ onMounted(() => {
 }
 
 .hero h1 {
-  font-size: 3.8rem;
-  margin-bottom: 10px;
+  font-family: 'Playfair Display', serif;
+  font-weight: 800;
+  font-size: 4.2rem;
+  margin-bottom: 14px;
+  letter-spacing: 0.5px;
+
+  background: linear-gradient(90deg, #ffe9d6, #ffffff 50%, #ffd8a8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 
   text-shadow:
-    2px 2px 8px rgba(0, 0, 0, 0.7);
+    2px 2px 20px rgba(0, 0, 0, 0.5);
 }
 
 .hero p {
-  font-size: 1.4rem;
-  margin: 20px 0 35px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 1.35rem;
+  margin: 20px 0 40px;
+  letter-spacing: 0.3px;
 
   text-shadow:
-    1px 1px 4px rgba(0, 0, 0, 0.7);
+    1px 1px 6px rgba(0, 0, 0, 0.6);
 }
 
 /* =========================
@@ -626,35 +633,37 @@ onMounted(() => {
 ========================= */
 
 .btn-chat {
-  background: #ea1d2c;
+  background: linear-gradient(135deg, #ea1d2c, #c01522);
   color: white;
+  font-family: 'Poppins', sans-serif;
 
   border: none;
 
-  padding: 16px 36px;
+  padding: 17px 40px;
 
-  border-radius: 30px;
+  border-radius: 40px;
 
   cursor: pointer;
 
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
 
   box-shadow:
-    0 4px 15px
-    rgba(234, 29, 44, 0.4);
+    0 8px 24px
+    rgba(234, 29, 44, 0.45);
 
   transition: 0.3s;
 }
 
 .btn-chat:hover {
-  background: #c01522;
+  background: linear-gradient(135deg, #ff2d3d, #d81e2c);
 
   transform:
     translateY(-3px);
 
   box-shadow:
-    0 6px 20px
+    0 10px 28px
     rgba(234, 29, 44, 0.6);
 }
 
@@ -664,28 +673,33 @@ onMounted(() => {
 
 .catalogo {
   background: #fdfbf7;
-  padding: 80px 20px;
+  padding: 90px 20px;
 }
 
 .catalogo h2,
 .localizacao h2 {
   text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 800;
 
   color: #2c1810;
 
-  font-size: 2.5rem;
+  font-size: 2.7rem;
 
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .subtitulo-secao {
   text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
 
   color: #8b5e3c;
 
-  margin-bottom: 50px;
+  margin-bottom: 55px;
 
   font-size: 1.1rem;
+  letter-spacing: 0.2px;
 }
 
 .categorias-grid {
@@ -710,25 +724,29 @@ onMounted(() => {
   min-width: 320px;
   max-width: 360px;
 
-  border-radius: 20px;
+  border-radius: 22px;
 
   box-shadow:
-    0 10px 30px
-    rgba(0, 0, 0, 0.06);
+    0 12px 34px
+    rgba(90, 56, 37, 0.08);
 
   overflow: hidden;
 
   border:
     1px solid #f5efe6;
 
-  transition: 0.3s;
+  transition: 0.35s ease;
 
   padding-bottom: 25px;
 }
 
 .categoria-card:hover {
   transform:
-    translateY(-5px);
+    translateY(-6px);
+
+  box-shadow:
+    0 18px 40px
+    rgba(90, 56, 37, 0.14);
 }
 
 .card-image-wrapper {
@@ -753,14 +771,16 @@ onMounted(() => {
 }
 
 .categoria-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
   color: #2c1810;
 
   padding:
-    20px 25px 10px;
+    22px 25px 10px;
 
   margin: 0;
 
-  font-size: 1.5rem;
+  font-size: 1.55rem;
 }
 
 .lista-itens {
@@ -782,30 +802,35 @@ onMounted(() => {
   display: flex;
 
   justify-content: space-between;
+  align-items: baseline;
 
-  font-weight: bold;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
 
   color: #2c1810;
 
-  font-size: 1.1rem;
+  font-size: 1.08rem;
 
   gap: 10px;
 }
 
 .item-preco {
   color: #e67e22;
+  font-weight: 700;
 
   white-space: nowrap;
 }
 
 .item-desc {
   margin-top: 5px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
 
   color: #7f8c8d;
 
   font-size: 0.95rem;
 
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 /* =========================
@@ -817,7 +842,7 @@ onMounted(() => {
 
   margin: 0 auto;
 
-  padding: 80px 20px;
+  padding: 90px 20px;
 
   display: flex;
 
@@ -841,9 +866,10 @@ onMounted(() => {
 }
 
 .endereco {
+  font-family: 'Poppins', sans-serif;
   font-size: 1.2rem;
 
-  line-height: 1.6;
+  line-height: 1.7;
 
   color: #2c1810;
 }
@@ -861,20 +887,22 @@ onMounted(() => {
 
   background: #fffdf9;
 
-  padding: 20px;
+  padding: 22px;
 
   border-left:
     5px solid #e67e22;
 
-  border-radius: 8px;
+  border-radius: 10px;
 
   box-shadow:
-    0 4px 15px
-    rgba(0, 0, 0, 0.02);
+    0 6px 20px
+    rgba(0, 0, 0, 0.04);
 }
 
 .horarios h4 {
   margin: 0 0 10px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
 
   color: #2c1810;
 
@@ -894,9 +922,9 @@ onMounted(() => {
 
   height: 280px;
 
-  background: #e3dec3;
+  background: linear-gradient(135deg, #e3dec3, #d7c3ad);
 
-  border-radius: 20px;
+  border-radius: 22px;
 
   border:
     3px solid #d7c3ad;
@@ -913,7 +941,8 @@ onMounted(() => {
 
   color: #5a3825;
 
-  font-weight: bold;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
 
   position: relative;
 
@@ -959,17 +988,17 @@ onMounted(() => {
 
   background: white;
 
-  border-radius: 25px;
+  border-radius: 28px;
 
-  padding: 30px 25px;
+  padding: 32px 25px;
 
   text-align: center;
 
   position: relative;
 
   box-shadow:
-    0 20px 50px
-    rgba(0, 0, 0, 0.3);
+    0 25px 60px
+    rgba(0, 0, 0, 0.35);
 }
 
 .btn-fechar {
@@ -995,14 +1024,17 @@ onMounted(() => {
 }
 
 .roleta-modal h2 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 800;
   color: #5a3825;
 
   margin-bottom: 8px;
 
-  font-size: 1.8rem;
+  font-size: 1.9rem;
 }
 
 .roleta-sub {
+  font-family: 'Poppins', sans-serif;
   color: #777;
 
   margin-bottom: 15px;
@@ -1071,8 +1103,8 @@ onMounted(() => {
   text-align: center;
 
   color: white;
-
-  font-weight: bold;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
 
   font-size: 14px;
 
@@ -1146,9 +1178,10 @@ onMounted(() => {
 
   justify-content: center;
 
+  font-family: 'Playfair Display', serif;
   font-size: 22px;
 
-  font-weight: bold;
+  font-weight: 800;
 
   color: #5a3825;
 
@@ -1190,33 +1223,37 @@ onMounted(() => {
 .btn-girar {
   width: 100%;
 
-  padding: 15px;
+  padding: 16px;
 
   border: none;
 
-  border-radius: 12px;
+  border-radius: 14px;
 
-  background: #5a3825;
+  background: linear-gradient(135deg, #5a3825, #7a4a30);
 
   color: white;
 
-  font-weight: bold;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
 
   font-size: 1rem;
+  letter-spacing: 0.5px;
 
   cursor: pointer;
 
-  transition: 0.2s;
+  transition: 0.25s;
 }
 
 .btn-girar:hover {
-  background: #8b5e3c;
+  background: linear-gradient(135deg, #7a4a30, #8b5e3c);
+  transform: translateY(-2px);
 }
 
 .btn-girar:disabled {
   background: #aaa;
 
   cursor: not-allowed;
+  transform: none;
 }
 
 /* =========================
@@ -1226,23 +1263,27 @@ onMounted(() => {
 .resultado-premio {
   margin-top: 15px;
 
-  padding: 20px;
+  padding: 22px;
 
-  background: #faf7f2;
+  background: linear-gradient(135deg, #faf7f2, #f5ede1);
 
-  border-radius: 15px;
+  border-radius: 16px;
 
   border:
     1px solid #e5d6c6;
 }
 
 .resultado-premio h3 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 800;
   color: #5a3825;
 
   margin-bottom: 8px;
 }
 
 .resultado-premio h4 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
   color: #8b5e3c;
 
   font-size: 1.3rem;
@@ -1294,22 +1335,23 @@ onMounted(() => {
   margin:
     15px 0;
 
-  padding: 12px;
+  padding: 14px;
 
   background: white;
 
   border:
     2px dashed #8b5e3c;
 
-  border-radius: 10px;
+  border-radius: 12px;
 
   color: #5a3825;
 
-  font-weight: bold;
+  font-family: 'Playfair Display', serif;
+  font-weight: 800;
 
-  font-size: 20px;
+  font-size: 21px;
 
-  letter-spacing: 2px;
+  letter-spacing: 2.5px;
 }
 
 .aviso-premio {
@@ -1319,19 +1361,20 @@ onMounted(() => {
 .btn-fechar-premio {
   width: 100%;
 
-  padding: 12px;
+  padding: 13px;
 
   border: none;
 
-  border-radius: 10px;
+  border-radius: 12px;
 
-  background: #5a3825;
+  background: linear-gradient(135deg, #5a3825, #7a4a30);
 
   color: white;
 
   cursor: pointer;
 
-  font-weight: bold;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
 }
 
 /* =========================
@@ -1359,7 +1402,7 @@ onMounted(() => {
 @media (max-width: 768px) {
 
   .hero h1 {
-    font-size: 2.6rem;
+    font-size: 2.8rem;
   }
 
   .hero p {
@@ -1400,7 +1443,7 @@ onMounted(() => {
   }
 
   .hero h1 {
-    font-size: 2.2rem;
+    font-size: 2.3rem;
   }
 
   .hero p {
@@ -1416,4 +1459,3 @@ onMounted(() => {
 }
 
 </style>
-
