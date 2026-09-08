@@ -1,61 +1,79 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const nome = ref('')
-const pessoas = ref('2 pessoas')
-const data = ref('')
-const horario = ref('19:00')
+interface Reserva {
+  nome: string
+  pessoas: string
+  data: string
+  horario: string
+}
 
-const reservaConfirmada = ref(false)
+const nome = ref<string>('')
 
-// Estados para o alerta customizado
-const erroVisivel = ref(false)
-const mensagemErro = ref('')
+const pessoas = ref<string>('2 pessoas')
 
-// Estado para a lista de reservas e painel de histórico
-const listaReservas = ref<Array<{ nome: string; pessoas: string; data: string; horario: string }>>([])
-const historicoVisivel = ref(false)
+const data = ref<string>('')
 
-// Pega a data atual no formato YYYY-MM-DD para travar o input HTML e validações
-const hoje = new Date().toISOString().split('T')[0]
+const horario = ref<string>('19:00')
 
-function mostrarErro(mensagem: string) {
+const reservaConfirmada = ref<boolean>(false)
+
+// Estados para o alerta personalizado
+const erroVisivel = ref<boolean>(false)
+const mensagemErro = ref<string>('')
+
+// Lista de reservas
+const listaReservas = ref<Reserva[]>([])
+
+// Painel de histórico
+const historicoVisivel = ref<boolean>(false)
+
+// Data atual no formato YYYY-MM-DD
+const hoje: string = new Date().toISOString().split('T')[0] ?? ''
+
+function mostrarErro(mensagem: string): void {
   mensagemErro.value = mensagem
   erroVisivel.value = true
 }
 
-function fecharErro() {
+function fecharErro(): void {
   erroVisivel.value = false
 }
 
-function fazerReserva() {
+function fazerReserva(): void {
+  // Verifica o nome
   if (!nome.value.trim()) {
     mostrarErro('Por favor, informe seu nome.')
     return
   }
 
+  // Verifica a data
   if (!data.value) {
     mostrarErro('Por favor, escolha uma data.')
     return
   }
 
+  // Impede datas anteriores
   if (data.value < hoje) {
-    mostrarErro('Não é permitido fazer reservas para anos ou datas anteriores.')
+    mostrarErro(
+      'Não é permitido fazer reservas para anos ou datas anteriores.'
+    )
     return
   }
 
-  // Adiciona a reserva na lista geral
+  // Adiciona a reserva à lista
   listaReservas.value.push({
-    nome: nome.value,
+    nome: nome.value.trim(),
     pessoas: pessoas.value,
     data: data.value,
     horario: horario.value
   })
 
+  // Mostra confirmação
   reservaConfirmada.value = true
 }
 
-function novaReserva() {
+function novaReserva(): void {
   nome.value = ''
   pessoas.value = '2 pessoas'
   data.value = ''
@@ -63,7 +81,7 @@ function novaReserva() {
   reservaConfirmada.value = false
 }
 
-function alternarHistorico() {
+function alternarHistorico(): void {
   historicoVisivel.value = !historicoVisivel.value
 }
 </script>
@@ -71,36 +89,54 @@ function alternarHistorico() {
 <template>
   <div class="reservas-container">
 
+    <!-- CABEÇALHO -->
     <div class="cabecalho">
       <h1>Reservas</h1>
+
       <p>
         Reserve sua mesa no Restaurante Sahur
       </p>
     </div>
 
     <!-- FORMULÁRIO -->
-    <div v-if="!reservaConfirmada" class="reserva-card">
+    <div
+      v-if="!reservaConfirmada"
+      class="reserva-card"
+    >
 
       <div class="card-topo">
+
         <div class="titulo-card">
           <h2>Reserve sua mesa</h2>
+
           <p>
             Escolha a data, o horário e a quantidade de pessoas.
           </p>
         </div>
+
         <!-- BOTÃO DE TRÊS PONTINHOS -->
-        <button class="btn-tres-pontinhos" @click="alternarHistorico" title="Ver reservas feitas">
+        <button
+          type="button"
+          class="btn-tres-pontinhos"
+          @click="alternarHistorico"
+          title="Ver reservas feitas"
+        >
           <span></span>
           <span></span>
           <span></span>
         </button>
+
       </div>
 
       <form @submit.prevent="fazerReserva">
 
         <!-- NOME -->
         <div class="campo-grupo">
-          <label for="nome">Nome</label>
+
+          <label for="nome">
+            Nome
+          </label>
+
           <input
             id="nome"
             v-model="nome"
@@ -108,12 +144,20 @@ function alternarHistorico() {
             placeholder="Digite seu nome"
             maxlength="50"
           />
+
         </div>
 
         <!-- PESSOAS -->
         <div class="campo-grupo">
-          <label for="pessoas">Quantidade de pessoas</label>
-          <select id="pessoas" v-model="pessoas">
+
+          <label for="pessoas">
+            Quantidade de pessoas
+          </label>
+
+          <select
+            id="pessoas"
+            v-model="pessoas"
+          >
             <option>1 pessoa</option>
             <option>2 pessoas</option>
             <option>3 pessoas</option>
@@ -122,23 +166,36 @@ function alternarHistorico() {
             <option>6 pessoas</option>
             <option>Mais de 6 pessoas</option>
           </select>
+
         </div>
 
         <!-- DATA -->
         <div class="campo-grupo">
-          <label for="data">Data da reserva</label>
+
+          <label for="data">
+            Data da reserva
+          </label>
+
           <input
             id="data"
             v-model="data"
             type="date"
             :min="hoje"
           />
+
         </div>
 
         <!-- HORÁRIO -->
         <div class="campo-grupo">
-          <label for="horario">Horário</label>
-          <select id="horario" v-model="horario">
+
+          <label for="horario">
+            Horário
+          </label>
+
+          <select
+            id="horario"
+            v-model="horario"
+          >
             <option>11:00</option>
             <option>12:00</option>
             <option>13:00</option>
@@ -149,8 +206,10 @@ function alternarHistorico() {
             <option>21:00</option>
             <option>22:00</option>
           </select>
+
         </div>
 
+        <!-- BOTÃO -->
         <button
           type="submit"
           class="btn-reservar"
@@ -159,6 +218,7 @@ function alternarHistorico() {
         </button>
 
       </form>
+
     </div>
 
     <!-- CONFIRMAÇÃO -->
@@ -166,17 +226,21 @@ function alternarHistorico() {
       v-else
       class="confirmacao"
     >
+
       <div class="confirmacao-icone">
         ✓
       </div>
 
-      <h2>Reserva confirmada</h2>
+      <h2>
+        Reserva confirmada
+      </h2>
 
       <p class="mensagem-confirmacao">
         Sua mesa foi reservada com sucesso.
       </p>
 
       <div class="dados-reserva">
+
         <div class="dado">
           <span>Nome</span>
           <strong>{{ nome }}</strong>
@@ -196,6 +260,7 @@ function alternarHistorico() {
           <span>Horário</span>
           <strong>{{ horario }}</strong>
         </div>
+
       </div>
 
       <p class="rodape-confirmacao">
@@ -203,45 +268,123 @@ function alternarHistorico() {
       </p>
 
       <button
+        type="button"
         class="btn-nova"
         @click="novaReserva"
       >
         Fazer nova reserva
       </button>
+
     </div>
 
-    <!-- MODAL / PAINEL DE HISTÓRICO DE RESERVAS -->
-    <div v-if="historicoVisivel" class="modal-overlay">
+    <!-- HISTÓRICO DE RESERVAS -->
+    <div
+      v-if="historicoVisivel"
+      class="modal-overlay"
+    >
+
       <div class="modal-alerta modal-historico">
+
         <div class="historico-cabecalho">
-          <h3>Reservas Realizadas</h3>
-          <button class="btn-fechar-historico" @click="alternarHistorico">✕</button>
+
+          <h3>
+            Reservas Realizadas
+          </h3>
+
+          <button
+            type="button"
+            class="btn-fechar-historico"
+            @click="alternarHistorico"
+          >
+            ✕
+          </button>
+
         </div>
 
-        <div v-if="listaReservas.length === 0" class="sem-reservas">
-          <p>Nenhuma reserva registrada ainda.</p>
+        <!-- SEM RESERVAS -->
+        <div
+          v-if="listaReservas.length === 0"
+          class="sem-reservas"
+        >
+          <p>
+            Nenhuma reserva registrada ainda.
+          </p>
         </div>
 
-        <div v-else class="lista-historico">
-          <div v-for="(res, index) in listaReservas" :key="index" class="item-historico">
-            <p><strong>Nome:</strong> {{ res.nome }}</p>
-            <p><strong>Pessoas:</strong> {{ res.pessoas }}</p>
-            <p><strong>Data:</strong> {{ res.data }} às {{ res.horario }}</p>
+        <!-- LISTA -->
+        <div
+          v-else
+          class="lista-historico"
+        >
+
+          <div
+            v-for="(res, index) in listaReservas"
+            :key="index"
+            class="item-historico"
+          >
+
+            <p>
+              <strong>Nome:</strong>
+              {{ res.nome }}
+            </p>
+
+            <p>
+              <strong>Pessoas:</strong>
+              {{ res.pessoas }}
+            </p>
+
+            <p>
+              <strong>Data:</strong>
+              {{ res.data }} às {{ res.horario }}
+            </p>
+
           </div>
+
         </div>
 
-        <button type="button" class="btn-alerta" @click="alternarHistorico" style="margin-top: 15px;">Fechar</button>
+        <button
+          type="button"
+          class="btn-alerta"
+          @click="alternarHistorico"
+          style="margin-top: 15px;"
+        >
+          Fechar
+        </button>
+
       </div>
+
     </div>
 
-    <!-- MODAL DE ALERTA CUSTOMIZADO -->
-    <div v-if="erroVisivel" class="modal-overlay">
+    <!-- ALERTA -->
+    <div
+      v-if="erroVisivel"
+      class="modal-overlay"
+    >
+
       <div class="modal-alerta">
-        <div class="alerta-icone">!</div>
-        <h3>Atenção</h3>
-        <p>{{ mensagemErro }}</p>
-        <button type="button" class="btn-alerta" @click="fecharErro">Entendi</button>
+
+        <div class="alerta-icone">
+          !
+        </div>
+
+        <h3>
+          Atenção
+        </h3>
+
+        <p>
+          {{ mensagemErro }}
+        </p>
+
+        <button
+          type="button"
+          class="btn-alerta"
+          @click="fecharErro"
+        >
+          Entendi
+        </button>
+
       </div>
+
     </div>
 
   </div>
@@ -308,6 +451,7 @@ function alternarHistorico() {
 }
 
 /* BOTÃO TRÊS PONTINHOS */
+
 .btn-tres-pontinhos {
   background: #f5efe6;
   border: 1px solid #d8c5b3;
@@ -369,7 +513,7 @@ function alternarHistorico() {
   box-shadow: 0 0 0 2px rgba(139, 94, 60, 0.12);
 }
 
-/* BOTÃO */
+/* BOTÃO RESERVAR */
 
 .btn-reservar {
   width: 100%;
@@ -461,7 +605,8 @@ function alternarHistorico() {
   margin-bottom: 25px;
 }
 
-/* MODAL / HISTÓRICO */
+/* MODAL */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -496,6 +641,8 @@ function alternarHistorico() {
   flex-direction: column;
 }
 
+/* CABEÇALHO DO HISTÓRICO */
+
 .historico-cabecalho {
   display: flex;
   justify-content: space-between;
@@ -518,6 +665,8 @@ function alternarHistorico() {
   cursor: pointer;
   color: #806b5b;
 }
+
+/* LISTA */
 
 .lista-historico {
   overflow-y: auto;
@@ -551,16 +700,21 @@ function alternarHistorico() {
   padding: 20px 0;
 }
 
+/* ANIMAÇÃO */
+
 @keyframes modalEntrada {
   from {
     transform: translateY(15px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
   }
 }
+
+/* ALERTA */
 
 .alerta-icone {
   width: 45px;

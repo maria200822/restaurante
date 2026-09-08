@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
-const mostrarFotos = ref(false)
-const fotoAtual = ref(0)
+interface Foto {
+  src: string
+  titulo: string
+  descricao: string
+}
 
-const fotos = [
+const mostrarFotos = ref<boolean>(false)
+
+const fotoAtual = ref<number>(0)
+
+const fotos: Foto[] = [
   {
     src: '/imagens/restaurante/frente.png',
     titulo: 'Fachada do Restaurante',
@@ -18,20 +25,29 @@ const fotos = [
   {
     src: '/imagens/restaurante/comidas.png',
     titulo: 'Comidas do Sahur',
-    descricao: 'Pratos preparados com carinho e apresentados pelos nossos clientes.'
+    descricao:
+      'Pratos preparados com carinho e apresentados pelos nossos clientes.'
   }
 ]
 
-function abrirFotos() {
+/*
+ * Garante que sempre teremos uma foto válida.
+ * Isso evita os erros do TypeScript com fotos[fotoAtual].
+ */
+const fotoSelecionada = computed<Foto>(() => {
+  return fotos[fotoAtual.value] ?? fotos[0]!
+})
+
+function abrirFotos(): void {
   fotoAtual.value = 0
   mostrarFotos.value = true
 }
 
-function fecharFotos() {
+function fecharFotos(): void {
   mostrarFotos.value = false
 }
 
-function proximaFoto() {
+function proximaFoto(): void {
   if (fotoAtual.value < fotos.length - 1) {
     fotoAtual.value++
   } else {
@@ -39,7 +55,7 @@ function proximaFoto() {
   }
 }
 
-function fotoAnterior() {
+function fotoAnterior(): void {
   if (fotoAtual.value > 0) {
     fotoAtual.value--
   } else {
@@ -47,8 +63,10 @@ function fotoAnterior() {
   }
 }
 
-function selecionarFoto(index: number) {
-  fotoAtual.value = index
+function selecionarFoto(index: number): void {
+  if (index >= 0 && index < fotos.length) {
+    fotoAtual.value = index
+  }
 }
 </script>
 
@@ -56,9 +74,7 @@ function selecionarFoto(index: number) {
   <div class="sobre-page">
 
     <!-- HERO -->
-
     <section class="hero-sobre">
-
       <div class="hero-conteudo">
 
         <span class="pequeno-titulo">
@@ -76,6 +92,7 @@ function selecionarFoto(index: number) {
         </p>
 
         <button
+          type="button"
           class="btn-fotos"
           @click="abrirFotos"
         >
@@ -83,12 +100,9 @@ function selecionarFoto(index: number) {
         </button>
 
       </div>
-
     </section>
 
-
     <!-- SOBRE -->
-
     <section class="sobre-conteudo">
 
       <div class="sobre-texto">
@@ -121,21 +135,16 @@ function selecionarFoto(index: number) {
 
       </div>
 
-
       <div class="sobre-imagem">
-
         <img
           src="/imagens/restaurante/interior.png"
           alt="Interior do Restaurante Sahur"
         />
-
       </div>
 
     </section>
 
-
     <!-- DIFERENCIAIS -->
-
     <section class="diferenciais">
 
       <div class="titulo-central">
@@ -149,7 +158,6 @@ function selecionarFoto(index: number) {
         </h2>
 
       </div>
-
 
       <div class="cards-diferenciais">
 
@@ -170,7 +178,6 @@ function selecionarFoto(index: number) {
 
         </div>
 
-
         <div class="card-diferencial">
 
           <div class="icone">
@@ -187,7 +194,6 @@ function selecionarFoto(index: number) {
           </p>
 
         </div>
-
 
         <div class="card-diferencial">
 
@@ -210,9 +216,7 @@ function selecionarFoto(index: number) {
 
     </section>
 
-
     <!-- LOCALIZAÇÃO -->
-
     <section class="localizacao">
 
       <div class="localizacao-texto">
@@ -227,7 +231,7 @@ function selecionarFoto(index: number) {
 
         <p class="endereco">
           Avenida dos Sabores, nº 1234
-          <br>
+          <br />
           Bairro Gourmet —
         </p>
 
@@ -235,7 +239,6 @@ function selecionarFoto(index: number) {
           Procurando pela fachada amarela
           ao lado do Parque Central!
         </p>
-
 
         <div class="horarios">
 
@@ -255,9 +258,7 @@ function selecionarFoto(index: number) {
 
       </div>
 
-
       <!-- MAPA -->
-
       <div class="mapa-container">
 
         <div class="mapa">
@@ -275,12 +276,14 @@ function selecionarFoto(index: number) {
 
           </div>
 
-
+          <!-- MARCADOR -->
           <button
+            type="button"
             class="marcador"
             @click="abrirFotos"
             title="Ver fotos do Restaurante Sahur"
           >
+
             <span class="pin">
               ●
             </span>
@@ -297,8 +300,8 @@ function selecionarFoto(index: number) {
 
         </div>
 
-
         <button
+          type="button"
           class="btn-ver-fotos"
           @click="abrirFotos"
         >
@@ -309,9 +312,7 @@ function selecionarFoto(index: number) {
 
     </section>
 
-
     <!-- MODAL DE FOTOS -->
-
     <div
       v-if="mostrarFotos"
       class="modal-overlay"
@@ -321,17 +322,16 @@ function selecionarFoto(index: number) {
       <div class="modal-fotos">
 
         <!-- FECHAR -->
-
         <button
+          type="button"
           class="btn-fechar"
           @click="fecharFotos"
+          aria-label="Fechar"
         >
           ×
         </button>
 
-
         <!-- CABEÇALHO -->
-
         <div class="modal-header">
 
           <div class="icone-restaurante">
@@ -352,61 +352,56 @@ function selecionarFoto(index: number) {
 
         </div>
 
-
         <!-- FOTO PRINCIPAL -->
-
         <div class="foto-principal">
 
           <img
-            :src="fotos[fotoAtual].src"
-            :alt="fotos[fotoAtual].titulo"
+            :src="fotoSelecionada.src"
+            :alt="fotoSelecionada.titulo"
           />
 
-
           <!-- SETA ESQUERDA -->
-
           <button
+            type="button"
             class="seta esquerda"
             @click="fotoAnterior"
+            aria-label="Foto anterior"
           >
             ‹
           </button>
 
-
           <!-- SETA DIREITA -->
-
           <button
+            type="button"
             class="seta direita"
             @click="proximaFoto"
+            aria-label="Próxima foto"
           >
             ›
           </button>
 
         </div>
 
-
         <!-- INFORMAÇÃO -->
-
         <div class="informacao-foto">
 
           <h3>
-            {{ fotos[fotoAtual].titulo }}
+            {{ fotoSelecionada.titulo }}
           </h3>
 
           <p>
-            {{ fotos[fotoAtual].descricao }}
+            {{ fotoSelecionada.descricao }}
           </p>
 
         </div>
 
-
         <!-- MINIATURAS -->
-
         <div class="miniaturas">
 
           <button
             v-for="(foto, index) in fotos"
             :key="foto.src"
+            type="button"
             class="miniatura"
             :class="{ ativa: fotoAtual === index }"
             @click="selecionarFoto(index)"
@@ -421,9 +416,7 @@ function selecionarFoto(index: number) {
 
         </div>
 
-
         <!-- INDICADORES -->
-
         <div class="indicadores">
 
           <span
@@ -442,9 +435,7 @@ function selecionarFoto(index: number) {
   </div>
 </template>
 
-
 <style scoped>
-
 * {
   box-sizing: border-box;
 }
@@ -455,17 +446,14 @@ function selecionarFoto(index: number) {
   color: #3d291e;
 }
 
-
 /* =========================
    HERO
 ========================= */
 
 .hero-sobre {
   min-height: 480px;
-
   display: flex;
   align-items: center;
-
   padding: 80px 8%;
 
   background:
@@ -519,15 +507,11 @@ function selecionarFoto(index: number) {
   border: none;
   padding: 15px 25px;
   border-radius: 9px;
-
   background: #8b5e3c;
   color: white;
-
   font-size: 15px;
   font-weight: bold;
-
   cursor: pointer;
-
   transition: 0.2s;
 }
 
@@ -536,7 +520,6 @@ function selecionarFoto(index: number) {
   transform: translateY(-2px);
 }
 
-
 /* =========================
    SOBRE
 ========================= */
@@ -544,13 +527,10 @@ function selecionarFoto(index: number) {
 .sobre-conteudo {
   max-width: 1200px;
   margin: auto;
-
   padding: 90px 30px;
-
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
-
   align-items: center;
 }
 
@@ -573,7 +553,6 @@ function selecionarFoto(index: number) {
   height: 430px;
   overflow: hidden;
   border-radius: 20px;
-
   box-shadow: 0 12px 35px rgba(50, 30, 15, 0.18);
 }
 
@@ -582,7 +561,6 @@ function selecionarFoto(index: number) {
   height: 100%;
   object-fit: cover;
 }
-
 
 /* =========================
    DIFERENCIAIS
@@ -602,7 +580,6 @@ function selecionarFoto(index: number) {
 .cards-diferenciais {
   max-width: 1100px;
   margin: 45px auto 0;
-
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 25px;
@@ -610,31 +587,23 @@ function selecionarFoto(index: number) {
 
 .card-diferencial {
   padding: 30px;
-
   background: white;
-
   border: 1px solid #eadccd;
   border-radius: 16px;
-
   box-shadow: 0 7px 25px rgba(50, 30, 15, 0.06);
 }
 
 .icone {
   width: 42px;
   height: 42px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border-radius: 50%;
-
   background: #8b5e3c;
   color: white;
-
   font-size: 13px;
   font-weight: bold;
-
   margin-bottom: 20px;
 }
 
@@ -647,7 +616,6 @@ function selecionarFoto(index: number) {
   line-height: 1.6;
 }
 
-
 /* =========================
    LOCALIZAÇÃO
 ========================= */
@@ -655,13 +623,10 @@ function selecionarFoto(index: number) {
 .localizacao {
   max-width: 1200px;
   margin: auto;
-
   padding: 90px 30px;
-
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
   gap: 55px;
-
   align-items: center;
 }
 
@@ -677,12 +642,9 @@ function selecionarFoto(index: number) {
 
 .horarios {
   margin-top: 30px;
-
   background: white;
   padding: 25px;
-
   border-radius: 15px;
-
   box-shadow: 0 7px 25px rgba(50, 30, 15, 0.08);
 }
 
@@ -694,7 +656,6 @@ function selecionarFoto(index: number) {
   color: #6f625a;
 }
 
-
 /* =========================
    MAPA
 ========================= */
@@ -702,20 +663,15 @@ function selecionarFoto(index: number) {
 .mapa-container {
   background: white;
   padding: 12px;
-
   border-radius: 20px;
-
   box-shadow: 0 10px 30px rgba(50, 30, 15, 0.12);
 }
 
 .mapa {
   height: 390px;
-
   position: relative;
   overflow: hidden;
-
   border-radius: 14px;
-
   background: #ddd9cd;
 }
 
@@ -727,15 +683,15 @@ function selecionarFoto(index: number) {
     linear-gradient(
       25deg,
       transparent 45%,
-      rgba(255,255,255,0.8) 46%,
-      rgba(255,255,255,0.8) 49%,
+      rgba(255, 255, 255, 0.8) 46%,
+      rgba(255, 255, 255, 0.8) 49%,
       transparent 50%
     ),
     linear-gradient(
       -30deg,
       transparent 45%,
-      rgba(255,255,255,0.8) 46%,
-      rgba(255,255,255,0.8) 49%,
+      rgba(255, 255, 255, 0.8) 46%,
+      rgba(255, 255, 255, 0.8) 49%,
       transparent 50%
     );
 
@@ -781,58 +737,39 @@ function selecionarFoto(index: number) {
 
 .parque {
   position: absolute;
-
   width: 170px;
   height: 100px;
-
   left: 30px;
   bottom: 35px;
-
   background: #a9b79b;
-
   border-radius: 50%;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: #53634c;
   font-size: 13px;
 }
-
 
 /* MARCADOR */
 
 .marcador {
   position: absolute;
-
   left: 50%;
   top: 50%;
-
   transform: translate(-50%, -50%);
-
   border: none;
-
   background: white;
-
   padding: 15px 20px;
-
   border-radius: 12px;
-
-  box-shadow: 0 7px 25px rgba(0,0,0,0.2);
-
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-
   min-width: 190px;
 }
 
 .pin {
   display: block;
-
   color: #8b5e3c;
-
   font-size: 34px;
-
   line-height: 25px;
 }
 
@@ -854,19 +791,13 @@ function selecionarFoto(index: number) {
 
 .btn-ver-fotos {
   width: 100%;
-
   margin-top: 12px;
-
   padding: 14px;
-
   border: none;
   border-radius: 9px;
-
   background: #5a3825;
   color: white;
-
   font-weight: bold;
-
   cursor: pointer;
 }
 
@@ -874,183 +805,126 @@ function selecionarFoto(index: number) {
   background: #3e271b;
 }
 
-
 /* =========================
    MODAL
 ========================= */
 
 .modal-overlay {
   position: fixed;
-
   inset: 0;
-
   z-index: 9999;
-
-  background: rgba(0,0,0,0.72);
-
+  background: rgba(0, 0, 0, 0.72);
   display: flex;
-
   justify-content: center;
   align-items: center;
-
   padding: 20px;
 }
 
 .modal-fotos {
   width: 720px;
   max-width: 95vw;
-
   max-height: 92vh;
-
   overflow-y: auto;
-
   background: #20150f;
-
   border: 1px solid #795538;
-
   border-radius: 20px;
-
   padding: 25px;
-
   position: relative;
-
   color: white;
-
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
-
 
 /* FECHAR */
 
 .btn-fechar {
   position: absolute;
-
   right: 18px;
   top: 18px;
-
   width: 40px;
   height: 40px;
-
   border: none;
-
   border-radius: 50%;
-
-  background: rgba(255,255,255,0.15);
-
+  background: rgba(255, 255, 255, 0.15);
   color: white;
-
   font-size: 27px;
-
   cursor: pointer;
-
   z-index: 5;
 }
 
 .btn-fechar:hover {
-  background: rgba(255,255,255,0.25);
+  background: rgba(255, 255, 255, 0.25);
 }
-
 
 /* HEADER */
 
 .modal-header {
   display: flex;
-
   align-items: center;
-
   gap: 14px;
-
   margin-bottom: 20px;
 }
 
 .icone-restaurante {
   width: 45px;
   height: 45px;
-
   border-radius: 10px;
-
   background: #8b5e3c;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 22px;
 }
 
 .modal-header h2 {
   margin: 0;
-
   font-size: 22px;
 }
 
 .modal-header p {
   margin: 4px 0 0;
-
   color: #cdbcae;
-
   font-size: 14px;
 }
-
 
 /* FOTO PRINCIPAL */
 
 .foto-principal {
   width: 100%;
-
   height: 390px;
-
   position: relative;
-
   overflow: hidden;
-
   border-radius: 14px;
-
   background: #100b08;
 }
 
 .foto-principal img {
   width: 100%;
   height: 100%;
-
   object-fit: cover;
-
   display: block;
 }
-
 
 /* SETAS */
 
 .seta {
   position: absolute;
-
   top: 50%;
-
   transform: translateY(-50%);
-
   width: 45px;
   height: 45px;
-
   border: none;
-
   border-radius: 50%;
-
-  background: rgba(0,0,0,0.55);
-
+  background: rgba(0, 0, 0, 0.55);
   color: white;
-
   font-size: 35px;
-
   cursor: pointer;
-
   display: flex;
-
   align-items: center;
   justify-content: center;
 }
 
 .seta:hover {
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
 }
 
 .esquerda {
@@ -1061,67 +935,49 @@ function selecionarFoto(index: number) {
   right: 15px;
 }
 
-
 /* INFORMAÇÃO */
 
 .informacao-foto {
   text-align: center;
-
   padding: 18px 10px 8px;
 }
 
 .informacao-foto h3 {
   margin: 0 0 7px;
-
   color: #d9b38c;
-
   font-size: 20px;
 }
 
 .informacao-foto p {
   margin: 0;
-
   color: #c9bbb0;
 }
-
 
 /* MINIATURAS */
 
 .miniaturas {
   display: flex;
-
   gap: 10px;
-
   margin-top: 15px;
-
   overflow-x: auto;
-
   padding-bottom: 5px;
 }
 
 .miniatura {
   width: 105px;
   height: 70px;
-
   flex-shrink: 0;
-
   padding: 0;
-
   border: 2px solid transparent;
-
   border-radius: 9px;
-
   overflow: hidden;
-
   cursor: pointer;
-
   background: transparent;
 }
 
 .miniatura img {
   width: 100%;
   height: 100%;
-
   object-fit: cover;
 }
 
@@ -1133,34 +989,26 @@ function selecionarFoto(index: number) {
   border-color: #a66a45;
 }
 
-
 /* INDICADORES */
 
 .indicadores {
   display: flex;
-
   justify-content: center;
-
   gap: 9px;
-
   margin-top: 18px;
 }
 
 .indicadores span {
   width: 9px;
   height: 9px;
-
   border-radius: 50%;
-
   background: #69584c;
-
   cursor: pointer;
 }
 
 .indicadores span.ativo {
   background: white;
 }
-
 
 /* =========================
    RESPONSIVO
@@ -1193,7 +1041,6 @@ function selecionarFoto(index: number) {
   .foto-principal {
     height: 300px;
   }
-
 }
 
 @media (max-width: 500px) {
@@ -1220,7 +1067,5 @@ function selecionarFoto(index: number) {
   .modal-fotos {
     padding: 18px;
   }
-
 }
-
 </style>

@@ -62,8 +62,9 @@ const premios: PremioRoleta[] = [
 
 function dataHoje(): string {
   const hoje = new Date()
+  const data = hoje.toISOString().split('T')[0]
 
-  return hoje.toISOString().split('T')[0]
+  return data ?? ''
 }
 
 export function obterPremioDiario(): PremioRoleta | null {
@@ -74,7 +75,8 @@ export function obterPremioDiario(): PremioRoleta | null {
   }
 
   try {
-    return JSON.parse(salvo)
+    const premio: PremioRoleta = JSON.parse(salvo)
+    return premio
   } catch {
     return null
   }
@@ -93,8 +95,14 @@ export function podeGirarHoje(): boolean {
 export function sortearPremio(): PremioRoleta {
   const indice = Math.floor(Math.random() * premios.length)
 
-  const premio = {
-    ...premios[indice],
+  const premioBase = premios[indice]
+
+  if (!premioBase) {
+    throw new Error('Não foi possível sortear um prêmio.')
+  }
+
+  const premio: PremioRoleta = {
+    ...premioBase,
     data: dataHoje(),
     usado: false
   }

@@ -53,7 +53,7 @@ const premios: PremioRoleta[] = [
   }
 ]
 
-function dataHoje() {
+function dataHoje(): string {
   const agora = new Date()
 
   return `${agora.getFullYear()}-${String(
@@ -63,18 +63,22 @@ function dataHoje() {
   ).padStart(2, '0')}`
 }
 
-function verificarPremioDoDia() {
+function verificarPremioDoDia(): void {
   const salvo = localStorage.getItem('premioRoletaSahur')
 
   if (!salvo) {
+    premioDoDia.value = null
     podeGirar.value = true
     return
   }
 
   try {
-    const dados = JSON.parse(salvo)
+    const dados = JSON.parse(salvo) as {
+      data?: string
+      premio?: PremioRoleta
+    }
 
-    if (dados.data === dataHoje()) {
+    if (dados.data === dataHoje() && dados.premio) {
       premioDoDia.value = dados.premio
       podeGirar.value = false
     } else {
@@ -87,18 +91,18 @@ function verificarPremioDoDia() {
   }
 }
 
-function abrirRoleta() {
+function abrirRoleta(): void {
   verificarPremioDoDia()
   roletaVisivel.value = true
 }
 
-function fecharRoleta() {
+function fecharRoleta(): void {
   if (!girando.value) {
     roletaVisivel.value = false
   }
 }
 
-function girarRoleta() {
+function girarRoleta(): void {
   if (girando.value || !podeGirar.value) {
     return
   }
@@ -106,8 +110,12 @@ function girarRoleta() {
   girando.value = true
 
   const indice = Math.floor(Math.random() * premios.length)
-
   const premio = premios[indice]
+
+  if (!premio) {
+    girando.value = false
+    return
+  }
 
   const grausPorPremio = 360 / premios.length
 
@@ -132,11 +140,6 @@ function girarRoleta() {
   }, 4200)
 }
 
-function abrirPremioSalvo() {
-  verificarPremioDoDia()
-  roletaVisivel.value = true
-}
-
 onMounted(() => {
   verificarPremioDoDia()
 })
@@ -150,23 +153,17 @@ onMounted(() => {
       <div class="hero-overlay"></div>
 
       <div class="hero-content">
-        <h1>🍽️ Restaurante Sahur</h1>
+        <h1>Restaurante Sahur</h1>
 
         <p>
           Bem-vindo ao restaurante mais divertido e saboroso da cidade!
         </p>
 
-        <!-- BOTÃO DA ROLETA -->
         <button
           class="btn-chat"
           @click="abrirRoleta"
         >
-          🎁
-          {{
-            premioDoDia
-              ? 'Ver Meu Prêmio'
-              : 'Girar Roleta'
-          }}
+          {{ premioDoDia ? 'Ver Meu Prêmio' : 'Girar Roleta' }}
         </button>
       </div>
     </section>
@@ -174,7 +171,7 @@ onMounted(() => {
     <!-- CATÁLOGO -->
     <section class="catalogo">
 
-      <h2> Nosso Cardápio Destaque</h2>
+      <h2>Nosso Cardápio Destaque</h2>
 
       <p class="subtitulo-secao">
         Conheça algumas de nossas especialidades mais amadas
@@ -372,15 +369,17 @@ onMounted(() => {
 
       <div class="localizacao-conteudo">
 
-        <h2>📍 Onde Estamos</h2>
+        <h2>Onde Estamos</h2>
 
         <p class="endereco">
           <strong>
             Avenida dos Sabores, nº 1234
           </strong>
+
           <br />
 
           Bairro Gourmet —
+
           <br />
 
           <span class="ponto-referencia">
@@ -420,10 +419,7 @@ onMounted(() => {
 
     </section>
 
-    <!-- ========================= -->
     <!-- MODAL DA ROLETA -->
-    <!-- ========================= -->
-
     <div
       v-if="roletaVisivel"
       class="roleta-overlay"
@@ -559,18 +555,17 @@ onMounted(() => {
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@400;500;600;700&display=swap');
 
-/* =========================
-   ESTILO GERAL
-========================= */
-
 * {
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
 
-/* =========================
-   HERO
-========================= */
+.home {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* HERO */
 
 .hero {
   position: relative;
@@ -591,7 +586,11 @@ onMounted(() => {
   inset: 0;
 
   background:
-    linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.75) 100%);
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.35) 0%,
+      rgba(0, 0, 0, 0.75) 100%
+    );
 
   z-index: 1;
 }
@@ -608,9 +607,17 @@ onMounted(() => {
   margin-bottom: 14px;
   letter-spacing: 0.5px;
 
-  background: linear-gradient(90deg, #ffe9d6, #ffffff 50%, #ffd8a8);
+  background:
+    linear-gradient(
+      90deg,
+      #ffe9d6,
+      #ffffff 50%,
+      #ffd8a8
+    );
+
   -webkit-background-clip: text;
   background-clip: text;
+
   color: transparent;
 
   text-shadow:
@@ -620,21 +627,29 @@ onMounted(() => {
 .hero p {
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
+
   font-size: 1.35rem;
+
   margin: 20px 0 40px;
+
   letter-spacing: 0.3px;
 
   text-shadow:
     1px 1px 6px rgba(0, 0, 0, 0.6);
 }
 
-/* =========================
-   BOTÃO HERO
-========================= */
+/* BOTÃO HERO */
 
 .btn-chat {
-  background: linear-gradient(135deg, #ea1d2c, #c01522);
+  background:
+    linear-gradient(
+      135deg,
+      #ea1d2c,
+      #c01522
+    );
+
   color: white;
+
   font-family: 'Poppins', sans-serif;
 
   border: none;
@@ -646,7 +661,9 @@ onMounted(() => {
   cursor: pointer;
 
   font-size: 1.15rem;
+
   font-weight: 700;
+
   letter-spacing: 0.3px;
 
   box-shadow:
@@ -657,7 +674,12 @@ onMounted(() => {
 }
 
 .btn-chat:hover {
-  background: linear-gradient(135deg, #ff2d3d, #d81e2c);
+  background:
+    linear-gradient(
+      135deg,
+      #ff2d3d,
+      #d81e2c
+    );
 
   transform:
     translateY(-3px);
@@ -667,19 +689,20 @@ onMounted(() => {
     rgba(234, 29, 44, 0.6);
 }
 
-/* =========================
-   CATÁLOGO
-========================= */
+/* CATÁLOGO */
 
 .catalogo {
   background: #fdfbf7;
+
   padding: 90px 20px;
 }
 
 .catalogo h2,
 .localizacao h2 {
   text-align: center;
+
   font-family: 'Playfair Display', serif;
+
   font-weight: 800;
 
   color: #2c1810;
@@ -691,7 +714,9 @@ onMounted(() => {
 
 .subtitulo-secao {
   text-align: center;
+
   font-family: 'Poppins', sans-serif;
+
   font-weight: 400;
 
   color: #8b5e3c;
@@ -699,6 +724,7 @@ onMounted(() => {
   margin-bottom: 55px;
 
   font-size: 1.1rem;
+
   letter-spacing: 0.2px;
 }
 
@@ -722,6 +748,7 @@ onMounted(() => {
   flex: 1;
 
   min-width: 320px;
+
   max-width: 360px;
 
   border-radius: 22px;
@@ -772,7 +799,9 @@ onMounted(() => {
 
 .categoria-card h3 {
   font-family: 'Playfair Display', serif;
+
   font-weight: 700;
+
   color: #2c1810;
 
   padding:
@@ -802,9 +831,11 @@ onMounted(() => {
   display: flex;
 
   justify-content: space-between;
+
   align-items: baseline;
 
   font-family: 'Poppins', sans-serif;
+
   font-weight: 600;
 
   color: #2c1810;
@@ -816,6 +847,7 @@ onMounted(() => {
 
 .item-preco {
   color: #e67e22;
+
   font-weight: 700;
 
   white-space: nowrap;
@@ -823,7 +855,9 @@ onMounted(() => {
 
 .item-desc {
   margin-top: 5px;
+
   font-family: 'Poppins', sans-serif;
+
   font-weight: 400;
 
   color: #7f8c8d;
@@ -833,9 +867,7 @@ onMounted(() => {
   line-height: 1.55;
 }
 
-/* =========================
-   LOCALIZAÇÃO
-========================= */
+/* LOCALIZAÇÃO */
 
 .localizacao {
   max-width: 1100px;
@@ -867,6 +899,7 @@ onMounted(() => {
 
 .endereco {
   font-family: 'Poppins', sans-serif;
+
   font-size: 1.2rem;
 
   line-height: 1.7;
@@ -901,7 +934,9 @@ onMounted(() => {
 
 .horarios h4 {
   margin: 0 0 10px;
+
   font-family: 'Poppins', sans-serif;
+
   font-weight: 700;
 
   color: #2c1810;
@@ -922,7 +957,12 @@ onMounted(() => {
 
   height: 280px;
 
-  background: linear-gradient(135deg, #e3dec3, #d7c3ad);
+  background:
+    linear-gradient(
+      135deg,
+      #e3dec3,
+      #d7c3ad
+    );
 
   border-radius: 22px;
 
@@ -942,6 +982,7 @@ onMounted(() => {
   color: #5a3825;
 
   font-family: 'Poppins', sans-serif;
+
   font-weight: 700;
 
   position: relative;
@@ -958,9 +999,7 @@ onMounted(() => {
   z-index: 1;
 }
 
-/* =========================
-   ROLETA
-========================= */
+/* ROLETA */
 
 .roleta-overlay {
   position: fixed;
@@ -986,6 +1025,10 @@ onMounted(() => {
 
   max-width: 95vw;
 
+  max-height: 95vh;
+
+  overflow-y: auto;
+
   background: white;
 
   border-radius: 28px;
@@ -1005,9 +1048,11 @@ onMounted(() => {
   position: absolute;
 
   right: 15px;
+
   top: 15px;
 
   width: 35px;
+
   height: 35px;
 
   border: none;
@@ -1025,7 +1070,9 @@ onMounted(() => {
 
 .roleta-modal h2 {
   font-family: 'Playfair Display', serif;
+
   font-weight: 800;
+
   color: #5a3825;
 
   margin-bottom: 8px;
@@ -1035,17 +1082,17 @@ onMounted(() => {
 
 .roleta-sub {
   font-family: 'Poppins', sans-serif;
+
   color: #777;
 
   margin-bottom: 15px;
 }
 
-/* =========================
-   CÍRCULO DA ROLETA
-========================= */
+/* CÍRCULO */
 
 .roleta-container {
   width: 290px;
+
   height: 290px;
 
   margin: 20px auto;
@@ -1055,11 +1102,13 @@ onMounted(() => {
 
 .roda {
   width: 270px;
+
   height: 270px;
 
   position: absolute;
 
   left: 10px;
+
   top: 10px;
 
   border-radius: 50%;
@@ -1103,7 +1152,9 @@ onMounted(() => {
   text-align: center;
 
   color: white;
+
   font-family: 'Poppins', sans-serif;
+
   font-weight: 700;
 
   font-size: 14px;
@@ -1113,56 +1164,50 @@ onMounted(() => {
     rgba(0, 0, 0, 0.5);
 }
 
-.f1,
 .azul {
   transform:
     rotate(30deg);
 }
 
-.f2,
 .vermelho {
   transform:
     rotate(90deg);
 }
 
-.f3,
 .verde {
   transform:
     rotate(150deg);
 }
 
-.f4,
 .amarelo {
   transform:
     rotate(210deg);
 }
 
-.f5,
 .roxo {
   transform:
     rotate(270deg);
 }
 
-.f6,
 .laranja {
   transform:
     rotate(330deg);
 }
 
-/* =========================
-   CENTRO
-========================= */
+/* CENTRO */
 
 .centro-roleta {
   position: absolute;
 
   left: 50%;
+
   top: 50%;
 
   transform:
     translate(-50%, -50%);
 
   width: 55px;
+
   height: 55px;
 
   background: white;
@@ -1179,6 +1224,7 @@ onMounted(() => {
   justify-content: center;
 
   font-family: 'Playfair Display', serif;
+
   font-size: 22px;
 
   font-weight: 800;
@@ -1188,9 +1234,7 @@ onMounted(() => {
   z-index: 5;
 }
 
-/* =========================
-   PONTEIRO
-========================= */
+/* PONTEIRO */
 
 .ponteiro {
   position: absolute;
@@ -1198,12 +1242,14 @@ onMounted(() => {
   z-index: 10;
 
   left: 50%;
+
   top: -3px;
 
   transform:
     translateX(-50%);
 
   width: 0;
+
   height: 0;
 
   border-left:
@@ -1216,9 +1262,7 @@ onMounted(() => {
     30px solid #5a3825;
 }
 
-/* =========================
-   BOTÃO
-========================= */
+/* BOTÃO */
 
 .btn-girar {
   width: 100%;
@@ -1229,14 +1273,21 @@ onMounted(() => {
 
   border-radius: 14px;
 
-  background: linear-gradient(135deg, #5a3825, #7a4a30);
+  background:
+    linear-gradient(
+      135deg,
+      #5a3825,
+      #7a4a30
+    );
 
   color: white;
 
   font-family: 'Poppins', sans-serif;
+
   font-weight: 700;
 
   font-size: 1rem;
+
   letter-spacing: 0.5px;
 
   cursor: pointer;
@@ -1245,27 +1296,38 @@ onMounted(() => {
 }
 
 .btn-girar:hover {
-  background: linear-gradient(135deg, #7a4a30, #8b5e3c);
-  transform: translateY(-2px);
+  background:
+    linear-gradient(
+      135deg,
+      #7a4a30,
+      #8b5e3c
+    );
+
+  transform:
+    translateY(-2px);
 }
 
 .btn-girar:disabled {
   background: #aaa;
 
   cursor: not-allowed;
+
   transform: none;
 }
 
-/* =========================
-   RESULTADO
-========================= */
+/* RESULTADO */
 
 .resultado-premio {
   margin-top: 15px;
 
   padding: 22px;
 
-  background: linear-gradient(135deg, #faf7f2, #f5ede1);
+  background:
+    linear-gradient(
+      135deg,
+      #faf7f2,
+      #f5ede1
+    );
 
   border-radius: 16px;
 
@@ -1275,7 +1337,9 @@ onMounted(() => {
 
 .resultado-premio h3 {
   font-family: 'Playfair Display', serif;
+
   font-weight: 800;
+
   color: #5a3825;
 
   margin-bottom: 8px;
@@ -1283,7 +1347,9 @@ onMounted(() => {
 
 .resultado-premio h4 {
   font-family: 'Poppins', sans-serif;
+
   font-weight: 700;
+
   color: #8b5e3c;
 
   font-size: 1.3rem;
@@ -1299,6 +1365,7 @@ onMounted(() => {
 
 .bolinha-cor {
   width: 25px;
+
   height: 25px;
 
   border-radius: 50%;
@@ -1347,6 +1414,7 @@ onMounted(() => {
   color: #5a3825;
 
   font-family: 'Playfair Display', serif;
+
   font-weight: 800;
 
   font-size: 21px;
@@ -1367,19 +1435,23 @@ onMounted(() => {
 
   border-radius: 12px;
 
-  background: linear-gradient(135deg, #5a3825, #7a4a30);
+  background:
+    linear-gradient(
+      135deg,
+      #5a3825,
+      #7a4a30
+    );
 
   color: white;
 
   cursor: pointer;
 
   font-family: 'Poppins', sans-serif;
+
   font-weight: 700;
 }
 
-/* =========================
-   ANIMAÇÃO
-========================= */
+/* ANIMAÇÃO */
 
 @keyframes bounce {
 
@@ -1395,9 +1467,7 @@ onMounted(() => {
   }
 }
 
-/* =========================
-   RESPONSIVO
-========================= */
+/* RESPONSIVO */
 
 @media (max-width: 768px) {
 
@@ -1439,6 +1509,7 @@ onMounted(() => {
       scale(0.9);
 
     margin-top: 5px;
+
     margin-bottom: 5px;
   }
 
