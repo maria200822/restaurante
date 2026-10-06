@@ -193,6 +193,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+
 import {
   ShoppingBag,
   Plus,
@@ -244,13 +245,10 @@ function resolveImagem(caminho) {
 // =====================================================
 
 function formatarPreco(valor) {
-  return Number(valor || 0).toLocaleString(
-    'pt-BR',
-    {
-      style: 'currency',
-      currency: 'BRL',
-    },
-  )
+  return valor.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  })
 }
 
 // =====================================================
@@ -260,22 +258,10 @@ function formatarPreco(valor) {
 function adicionarAoCarrinho(item) {
   addItem({
     id: item.id,
-
     name: item.nome,
-
-    nome: item.nome,
-
     price: item.preco,
-
-    categoria: item.categoria,
-
-    description: item.descricao,
-
-    descricao: item.descricao,
-
     image: resolveImagem(item.imagem),
-
-    imagem: resolveImagem(item.imagem),
+    categoria: item.categoria,
   })
 }
 
@@ -285,7 +271,6 @@ function adicionarAoCarrinho(item) {
 
 function irParaCheckout() {
   carrinhoAberto.value = false
-
   router.push('/checkout')
 }
 
@@ -472,6 +457,76 @@ const categorias = [
         preco: 29.90,
         imagem:
           'https://images.unsplash.com/photo-1553979459-d2229ba7433b?auto=format&fit=crop&w=300&q=80',
+      },
+    ],
+  },
+
+  // =====================================================
+  // NOVA CATEGORIA: PIZZAS
+  // =====================================================
+
+  {
+    nome: 'Pizzas',
+
+    itens: [
+      {
+        id: 'pizza-calabresa',
+        nome: 'Julita Calabresina',
+        descricao:
+          'Pizza de calabresa com queijo, cebola e orégano.',
+        preco: 54.90,
+        imagem: 'pizza calabresa.jpg',
+        categoria: 'pizzas',
+      },
+
+      {
+        id: 'pizza-frango',
+        nome: 'Emilinha Frangolina',
+        descricao:
+          'Pizza de frango desfiado com queijo cremoso e milho.',
+        preco: 55.90,
+        imagem: 'pizza frango.avif',
+        categoria: 'pizzas',
+      },
+
+      {
+        id: 'pizza-vegetariana',
+        nome: 'Sahur Veggie',
+        descricao:
+          'Pizza vegetariana com queijo, tomate, milho, cebola, pimentão e azeitonas.',
+        preco: 52.90,
+        imagem: 'pizza vegetariana.jpg',
+        categoria: 'pizzas',
+      },
+
+      {
+        id: 'pizza-mini',
+        nome: 'Mini Pizzinhas Sahurzinhas',
+        descricao:
+          'Mini pizzas individuais com queijo, molho de tomate e orégano.',
+        preco: 32.90,
+        imagem: 'mini pizzas.jpg',
+        categoria: 'pizzas',
+      },
+
+      {
+        id: 'pizza-brigadeiro',
+        nome: 'Patapim Brigadeirinho',
+        descricao:
+          'Pizza doce de brigadeiro com chocolate e granulado.',
+        preco: 49.90,
+        imagem: 'pizza brigadeiro.jpg',
+        categoria: 'pizzas',
+      },
+
+      {
+        id: 'pizza-morango',
+        nome: 'Julia Moranguina',
+        descricao:
+          'Pizza doce de chocolate com morangos e leite condensado.',
+        preco: 52.90,
+        imagem: 'pizza morango.jpg',
+        categoria: 'pizzas',
       },
     ],
   },
@@ -721,16 +776,12 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   background: white;
   border-radius: 12px;
   padding: 20px;
-
   border: 1px solid #eee;
-
   box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.04);
-
   transition: 0.2s ease-in-out;
   gap: 15px;
 }
@@ -738,17 +789,14 @@ h2 {
 .card:hover {
   transform: translateY(-2px);
   border-color: #d7c3ad;
-
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .card-info {
   flex: 1;
-
   display: flex;
   flex-direction: column;
-
   gap: 6px;
 }
 
@@ -775,10 +823,8 @@ h2 {
 .card-img {
   width: 110px;
   height: 110px;
-
   object-fit: cover;
   border-radius: 8px;
-
   background-color: #f5efe6;
 }
 
@@ -790,19 +836,14 @@ h2 {
   display: flex;
   align-items: center;
   gap: 6px;
-
   background: #e67e22;
   color: white;
-
   border: none;
   padding: 8px 14px;
   border-radius: 8px;
-
   font-size: 0.9rem;
   font-weight: 600;
-
   cursor: pointer;
-
   transition:
     background 0.2s ease,
     transform 0.15s ease;
@@ -817,10 +858,8 @@ h2 {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-
   background: #fdf1e3;
   border: 1px solid #f0d9bd;
-
   border-radius: 8px;
   padding: 4px 10px;
 }
@@ -829,18 +868,13 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 26px;
   height: 26px;
-
   border: none;
   background: #e67e22;
   color: white;
-
   border-radius: 6px;
-
   cursor: pointer;
-
   transition: background 0.2s ease;
 }
 
@@ -851,7 +885,6 @@ h2 {
 .qty-stepper span {
   font-weight: 600;
   color: #2c1810;
-
   min-width: 16px;
   text-align: center;
 }
@@ -867,42 +900,28 @@ h2 {
 
 .floating-cart {
   position: fixed;
-
   bottom: 24px;
   left: 50%;
-
   transform: translateX(-50%);
-
   display: flex;
   align-items: center;
   gap: 16px;
-
   background: #2c1810;
   color: white;
-
   border: none;
-
   padding: 14px 26px;
-
   border-radius: 50px;
-
   box-shadow:
     0 8px 24px rgba(0, 0, 0, 0.25);
-
   cursor: pointer;
-
   z-index: 90;
-
   font-family: inherit;
 }
 
 .floating-cart-count {
   background: rgba(255, 255, 255, 0.15);
-
   padding: 4px 10px;
-
   border-radius: 20px;
-
   font-size: 0.85rem;
 }
 
@@ -915,7 +934,6 @@ h2 {
   display: flex;
   align-items: center;
   gap: 6px;
-
   font-weight: 600;
 }
 
@@ -927,7 +945,6 @@ h2 {
 .slide-up-enter-from,
 .slide-up-leave-to {
   opacity: 0;
-
   transform:
     translateX(-50%)
     translateY(20px);
@@ -939,14 +956,10 @@ h2 {
 
 .drawer-overlay {
   position: fixed;
-
   inset: 0;
-
   background: rgba(0, 0, 0, 0.5);
-
   display: flex;
   justify-content: flex-end;
-
   z-index: 200;
 }
 
@@ -954,12 +967,9 @@ h2 {
   width: 420px;
   max-width: 90vw;
   height: 100%;
-
   background: #fdfbf7;
-
   display: flex;
   flex-direction: column;
-
   box-shadow:
     -8px 0 24px rgba(0, 0, 0, 0.2);
 }
@@ -968,9 +978,7 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   padding: 20px;
-
   border-bottom: 1px solid #eee;
 }
 
@@ -982,119 +990,89 @@ h2 {
 .drawer-close {
   background: none;
   border: none;
-
   cursor: pointer;
-
   color: #2c1810;
 }
 
 .drawer-empty {
   flex: 1;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: #718096;
 }
 
 .drawer-items {
   flex: 1;
-
   overflow-y: auto;
-
   padding: 16px 20px;
-
   display: flex;
   flex-direction: column;
-
   gap: 14px;
 }
 
 .drawer-item {
   display: flex;
   align-items: center;
-
   gap: 12px;
 }
 
 .drawer-item img {
   width: 56px;
   height: 56px;
-
   object-fit: cover;
-
   border-radius: 8px;
 }
 
 .drawer-item-info {
   flex: 1;
-
   display: flex;
   flex-direction: column;
-
   gap: 2px;
 }
 
 .drawer-item-info h4 {
   margin: 0;
-
   font-size: 0.95rem;
-
   color: #2c1810;
 }
 
 .drawer-item-info span {
   font-size: 0.85rem;
-
   color: #e67e22;
-
   font-weight: 600;
 }
 
 .drawer-item-remove {
   background: none;
   border: none;
-
   color: #b23b3b;
-
   cursor: pointer;
 }
 
 .drawer-footer {
   padding: 20px;
-
   border-top: 1px solid #eee;
 }
 
 .drawer-total {
   display: flex;
   justify-content: space-between;
-
   margin-bottom: 14px;
-
   font-size: 1.05rem;
-
   color: #2c1810;
 }
 
 .btn-checkout {
   width: 100%;
-
   background: #e67e22;
   color: white;
-
   border: none;
-
   padding: 14px;
-
   border-radius: 10px;
-
   font-weight: 700;
   font-size: 1rem;
-
   cursor: pointer;
-
   transition: background 0.2s ease;
 }
 
@@ -1144,11 +1122,8 @@ h2 {
 
   .floating-cart {
     width: calc(100% - 30px);
-
     justify-content: center;
-
     gap: 10px;
-
     padding: 13px 15px;
   }
 }
